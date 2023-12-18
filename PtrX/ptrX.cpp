@@ -75,6 +75,31 @@ bool MemoryManager::readValue(const int* address, int& value, int size) {
     }
 }
 
+int* MemoryManager::resizeMemory(int* ptr, int newSize) {
+    if (ptr != nullptr && newSize > 0) {
+        int* newPtr = new (std::nothrow) int[newSize];
+        if (newPtr != nullptr) {
+            std::memcpy(newPtr, ptr, std::min(sizeof(int) * newSize, sizeof(int) * sizeof(ptr)));
+            delete[] ptr;
+            return newPtr;
+        }
+        else {
+            std::cerr << "Memory reallocation failed" << std::endl;
+            return nullptr;
+        }
+    }
+    else {
+        std::cerr << "Invalid resize operation: ";
+        if (ptr == nullptr) {
+            std::cerr << "Null pointer." << std::endl;
+        }
+        else {
+            std::cerr << "Invalid size." << std::endl;
+        }
+        return nullptr;
+    }
+}
+
 bool MemoryManager::copyMemory(const int* source, int* destination, int size) {
     if (source != nullptr && destination != nullptr && size > 0) {
         std::memcpy(destination, source, size * sizeof(int));
@@ -668,4 +693,337 @@ void MemoryManager::resizeMemoryWithDefaultValue(int* address, int& size, int ne
     else {
         std::cerr << "Invalid resizeMemoryWithDefaultValue operation." << std::endl;
     }
+}
+
+bool MemoryManager::isMemoryNull(const int* address) {
+    return (address == nullptr);
+}
+
+bool MemoryManager::isMemoryAllocated(const int* address) {
+    return (address != nullptr);
+}
+
+bool MemoryManager::isMemoryInitialized(const int* address, int size) {
+    if (address == nullptr || size <= 0) {
+        std::cerr << "Invalid isMemoryInitialized check: Null pointer or invalid size." << std::endl;
+        return false;
+    }
+
+    for (int i = 0; i < size; ++i) {
+        if (address[i] == 0) {
+            std::cerr << "Invalid isMemoryInitialized check: Memory contains zero at index " << i << "." << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool MemoryManager::isMemoryEmpty(const int* address, int size) {
+    if (address == nullptr || size <= 0) {
+        std::cerr << "Invalid isMemoryEmpty check: Null pointer or invalid size." << std::endl;
+        return false;
+    }
+
+    for (int i = 0; i < size; ++i) {
+        if (address[i] != 0) {
+            std::cerr << "Invalid isMemoryEmpty check: Memory contains non-zero value at index " << i << "." << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool MemoryManager::isMemoryReadable(const int* address, int size) {
+    if (address == nullptr) {
+        std::cerr << "Invalid isMemoryReadable check: Null pointer." << std::endl;
+        return false;
+    }
+
+    if (size <= 0) {
+        std::cerr << "Invalid isMemoryReadable check: Invalid size." << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+bool MemoryManager::isMemoryWritable(int* address, int size) {
+    if (address == nullptr) {
+        std::cerr << "Invalid isMemoryWritable check: Null pointer." << std::endl;
+        return false;
+    }
+
+    if (size <= 0) {
+        std::cerr << "Invalid isMemoryWritable check: Invalid size." << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+void MemoryManager::swapAdjacentValues(int* address, int size) {
+    if (address != nullptr && size > 1) {
+        for (int i = 0; i < size - 1; i += 2) {
+            std::swap(address[i], address[i + 1]);
+        }
+    }
+    else {
+        std::cerr << "Invalid swapAdjacentValues operation." << std::endl;
+    }
+}
+
+void MemoryManager::replaceValue(int* address, int size, int oldValue, int newValue) {
+    if (address != nullptr && size > 0) {
+        std::replace(address, address + size, oldValue, newValue);
+    }
+    else {
+        std::cerr << "Invalid replaceValue operation." << std::endl;
+    }
+}
+
+int* MemoryManager::mergeSortedMemory(const int* block1, int size1, const int* block2, int size2) {
+    if (block1 == nullptr || size1 <= 0 || block2 == nullptr || size2 <= 0) {
+        std::cerr << "Invalid mergeSortedMemory operation: Null or empty blocks." << std::endl;
+        return nullptr;
+    }
+
+    int* mergedBlock = new int[size1 + size2];
+    int i = 0, j = 0, k = 0;
+
+    while (i < size1 && j < size2) {
+        if (block1[i] < block2[j]) {
+            mergedBlock[k++] = block1[i++];
+        }
+        else {
+            mergedBlock[k++] = block2[j++];
+        }
+    }
+
+    while (i < size1) {
+        mergedBlock[k++] = block1[i++];
+    }
+
+    while (j < size2) {
+        mergedBlock[k++] = block2[j++];
+    }
+
+    return mergedBlock;
+}
+
+bool MemoryManager::isMemoryPalindrome(const int* address, int size) {
+    if (address == nullptr || size <= 0) {
+        std::cerr << "Invalid isMemoryPalindrome operation: Null or empty block." << std::endl;
+        return false;
+    }
+
+    for (int i = 0; i < size / 2; ++i) {
+        if (address[i] != address[size - 1 - i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int MemoryManager::binarySearch(const int* sortedBlock, int size, int target) {
+    if (sortedBlock == nullptr || size <= 0) {
+        std::cerr << "Invalid binarySearch operation: Null or empty sorted block." << std::endl;
+        return -1;
+    }
+
+    int left = 0;
+    int right = size - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (sortedBlock[mid] == target) {
+            return mid;
+        }
+        else if (sortedBlock[mid] < target) {
+            left = mid + 1;
+        }
+        else {
+            right = mid - 1;
+        }
+    }
+
+    return -1;
+}
+
+void MemoryManager::rotateMemoryRangeLeft(int* address, int start, int end, int shiftCount) {
+    if (address != nullptr && start >= 0 && end < size && start < end) {
+        std::rotate(address + start, address + start + (shiftCount % (end - start + 1)), address + end + 1);
+    }
+    else {
+        std::cerr << "Invalid rotateMemoryRangeLeft operation." << std::endl;
+    }
+}
+
+void MemoryManager::rotateMemoryRangeRight(int* address, int start, int end, int shiftCount) {
+    if (address != nullptr && start >= 0 && end < size && start < end) {
+        std::rotate(address + start, address + end - (shiftCount % (end - start + 1)) + 1, address + end + 1);
+    }
+    else {
+        std::cerr << "Invalid rotateMemoryRangeRight operation." << std::endl;
+    }
+}
+
+void MemoryManager::swapAdjacentMemoryRanges(int* address, int range1Start, int range1End, int range2Start, int range2End) {
+    if (address != nullptr && range1Start >= 0 && range1End < size && range1Start < range1End &&
+        range2Start >= 0 && range2End < size && range2Start < range2End) {
+
+        std::swap_ranges(address + range1Start, address + range1End + 1, address + range2Start);
+    }
+    else {
+        std::cerr << "Invalid swapAdjacentMemoryRanges operation." << std::endl;
+    }
+}
+
+void MemoryManager::threeWayPartition(int* address, int size, int pivotValue, int& lowerBound, int& upperBound) {
+    if (address != nullptr && size > 0) {
+        lowerBound = 0;
+        upperBound = size - 1;
+
+        int i = 0;
+        while (i <= upperBound) {
+            if (address[i] < pivotValue) {
+                std::swap(address[i], address[lowerBound]);
+                ++lowerBound;
+                ++i;
+            }
+            else if (address[i] > pivotValue) {
+                std::swap(address[i], address[upperBound]);
+                --upperBound;
+            }
+            else {
+                ++i;
+            }
+        }
+    }
+    else {
+        std::cerr << "Invalid threeWayPartition operation." << std::endl;
+    }
+}
+
+int* MemoryManager::unionSortedMemory(const int* block1, int size1, const int* block2, int size2, int& unionSize) {
+    if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
+        std::cerr << "Invalid unionSortedMemory operation." << std::endl;
+        unionSize = 0;
+        return nullptr;
+    }
+
+    std::vector<int> result;
+    std::merge(block1, block1 + size1, block2, block2 + size2, std::back_inserter(result));
+    result.erase(std::unique(result.begin(), result.end()), result.end());
+
+    unionSize = static_cast<int>(result.size());
+    int* unionMemory = new int[unionSize];
+    std::copy(result.begin(), result.end(), unionMemory);
+
+    return unionMemory;
+}
+
+int* MemoryManager::differenceSortedMemory(const int* block1, int size1, const int* block2, int size2, int& differenceSize) {
+    if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
+        std::cerr << "Invalid differenceSortedMemory operation." << std::endl;
+        differenceSize = 0;
+        return nullptr;
+    }
+
+    std::vector<int> result;
+    std::set_difference(block1, block1 + size1, block2, block2 + size2, std::back_inserter(result));
+
+    differenceSize = static_cast<int>(result.size());
+    int* differenceMemory = new int[differenceSize];
+    std::copy(result.begin(), result.end(), differenceMemory);
+
+    return differenceMemory;
+}
+
+int* MemoryManager::symmetricDifferenceSortedMemory(const int* block1, int size1, const int* block2, int size2, int& symDiffSize) {
+    if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
+        std::cerr << "Invalid symmetricDifferenceSortedMemory operation." << std::endl;
+        symDiffSize = 0;
+        return nullptr;
+    }
+
+    std::vector<int> result;
+    std::set_symmetric_difference(block1, block1 + size1, block2, block2 + size2, std::back_inserter(result));
+
+    symDiffSize = static_cast<int>(result.size());
+    int* symDiffMemory = new int[symDiffSize];
+    std::copy(result.begin(), result.end(), symDiffMemory);
+
+    return symDiffMemory;
+}
+
+bool MemoryManager::isSubsetSortedMemory(const int* potentialSubset, int subsetSize, const int* set, int setSize) {
+    if (potentialSubset == nullptr || subsetSize <= 0 || set == nullptr || setSize <= 0) {
+        std::cerr << "Invalid isSubsetSortedMemory operation." << std::endl;
+        return false;
+    }
+
+    return std::includes(set, set + setSize, potentialSubset, potentialSubset + subsetSize);
+}
+
+bool MemoryManager::isMemoryStrictlyIncreasing(const int* address, int size) {
+    if (address == nullptr || size <= 0) {
+        std::cerr << "Invalid isMemoryStrictlyIncreasing operation." << std::endl;
+        return false;
+    }
+
+    return std::is_sorted(address, address + size) && std::adjacent_find(address, address + size, std::greater<int>()) == address + size;
+}
+
+bool MemoryManager::isMemoryStrictlyDecreasing(const int* address, int size) {
+    if (address == nullptr || size <= 0) {
+        std::cerr << "Invalid isMemoryStrictlyDecreasing operation." << std::endl;
+        return false;
+    }
+
+    return std::is_sorted(address, address + size, std::greater<int>()) && std::adjacent_find(address, address + size, std::less<int>()) == address + size;
+}
+
+bool MemoryManager::isMemoryPlateau(const int* address, int size, int& plateauStart, int& plateauEnd) {
+    if (address == nullptr || size <= 0) {
+        std::cerr << "Invalid isMemoryPlateau operation." << std::endl;
+        return false;
+    }
+
+    plateauStart = plateauEnd = -1;
+
+    for (int i = 1; i < size; ++i) {
+        if (address[i] == address[i - 1]) {
+            if (plateauStart == -1) {
+                plateauStart = i - 1;
+            }
+            plateauEnd = i;
+        }
+        else if (plateauEnd != -1) {
+            break;
+        }
+    }
+
+    return plateauStart != -1 && plateauEnd != -1;
+}
+
+bool MemoryManager::isMemoryMountain(const int* address, int size, int& peakIndex) {
+    if (address == nullptr || size <= 0) {
+        std::cerr << "Invalid isMemoryMountain operation." << std::endl;
+        return false;
+    }
+
+    peakIndex = -1;
+
+    for (int i = 1; i < size - 1; ++i) {
+        if (address[i] > address[i - 1] && address[i] > address[i + 1]) {
+            peakIndex = i;
+            return true;
+        }
+    }
+
+    return false;
 }
