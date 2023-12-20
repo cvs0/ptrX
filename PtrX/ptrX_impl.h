@@ -598,12 +598,20 @@ inline T* MemoryManager<T>::decompressMemory(const T* compressedData, int compre
         T* decompressedPtr = new (std::nothrow) int[originalSize];
         if (decompressedPtr != nullptr) {
             int currentIndex = 0;
+            int count = 1;
+
             for (int i = 0; i < compressedSize; ++i) {
                 decompressedPtr[currentIndex++] = compressedData[i];
-                while (currentIndex < originalSize && compressedData[i] == compressedData[i + 1]) {
+
+                while (i < compressedSize - 1 && compressedData[i] == compressedData[i + 1] && count < originalSize) {
                     decompressedPtr[currentIndex++] = compressedData[i];
+                    ++count;
+                    ++i;
                 }
+
+                count = 1;
             }
+
             return decompressedPtr;
         }
         else {
@@ -617,16 +625,17 @@ inline T* MemoryManager<T>::decompressMemory(const T* compressedData, int compre
     }
 }
 
+
 template <typename T>
 inline void MemoryManager<T>::encryptMemory(T* address, int size, const std::string& key) {
     if (address != nullptr && size > 0 && !key.empty()) {
-        std::string binaryKey = "";
+        std::vector<int> xorValues;
         for (char c : key) {
-            binaryKey += std::bitset<8>(c).to_string();
+            xorValues.push_back(static_cast<int>(c) - '0');
         }
 
         for (int i = 0; i < size; ++i) {
-            address[i] ^= static_cast<int>(binaryKey[i % binaryKey.size()] - '0');
+            address[i] ^= xorValues[i % key.size()];
         }
     }
     else {
@@ -634,22 +643,24 @@ inline void MemoryManager<T>::encryptMemory(T* address, int size, const std::str
     }
 }
 
+
 template <typename T>
 inline void MemoryManager<T>::decryptMemory(T* address, int size, const std::string& key) {
     if (address != nullptr && size > 0 && !key.empty()) {
-        std::string binaryKey = "";
+        std::vector<int> xorValues;
         for (char c : key) {
-            binaryKey += std::bitset<8>(c).to_string();
+            xorValues.push_back(static_cast<int>(c) - '0');
         }
 
         for (int i = 0; i < size; ++i) {
-            address[i] ^= static_cast<int>(binaryKey[i % binaryKey.size()] - '0');
+            address[i] ^= xorValues[i % key.size()];
         }
     }
     else {
         std::cerr << "Invalid decryptMemory operation." << std::endl;
     }
 }
+
 
 template <typename T>
 inline void MemoryManager<T>::reverseMemoryInRange(T* address, int start, int end) {
