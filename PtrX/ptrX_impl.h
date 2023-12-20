@@ -61,7 +61,9 @@ template <typename T>
 inline T* MemoryManager<T>::allocateMemory(int size) {
     T* ptr = new (std::nothrow) int[size];
     if (ptr == nullptr) {
+#ifdef DEBUG_MODE
         std::cerr << "Memory allocation failed" << std::endl;
+#endif
     }
     return ptr;
 }
@@ -86,7 +88,9 @@ inline void MemoryManager<T>::deallocateMemory(T* ptr) {
         ptr = nullptr;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Trying to deallocate a null pointer" << std::endl;
+#endif
     }
 }
 
@@ -110,12 +114,18 @@ inline bool MemoryManager<T>::writeValue(T* address, int value, int size) {
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid write operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return false;
     }
@@ -141,15 +151,23 @@ inline bool MemoryManager<T>::readValue(const T* address, int& value, int size) 
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid read operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else if (size <= 0) {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Unaligned address." << std::endl;
+#endif
         }
         return false;
     }
@@ -176,17 +194,25 @@ inline T* MemoryManager<T>::resizeMemory(T* ptr, int newSize) {
             return newPtr;
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Memory reallocation failed" << std::endl;
+#endif
             return nullptr;
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid resize operation: ";
+#endif
         if (ptr == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return nullptr;
     }
@@ -212,12 +238,18 @@ inline bool MemoryManager<T>::copyMemory(const T* source, T* destination, int si
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid copy operation: ";
+#endif
         if (source == nullptr || destination == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return false;
     }
@@ -242,12 +274,18 @@ inline bool MemoryManager<T>::fillMemory(T* address, int value, int size) {
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid fill operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return false;
     }
@@ -274,17 +312,25 @@ inline const T* MemoryManager<T>::findValue(const T* address, int value, int siz
             return it;
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Value not found in memory." << std::endl;
+#endif
             return nullptr;
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid findValue operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return nullptr;
     }
@@ -309,12 +355,18 @@ inline bool MemoryManager<T>::compareMemory(const T* address1, const T* address2
         return std::equal(address1, address1 + size, address2);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid compare operation: ";
+#endif
         if (address1 == nullptr || address2 == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return false;
     }
@@ -338,12 +390,18 @@ inline bool MemoryManager<T>::zeroMemory(T* address, int size) {
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid zero operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return false;
     }
@@ -369,17 +427,25 @@ inline T* MemoryManager<T>::allocateAndCopy(const T* source, int size) {
             return newPtr;
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Memory allocation and copy failed" << std::endl;
+#endif
             return nullptr;
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid allocateAndCopy operation: ";
+#endif
         if (source == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return nullptr;
     }
@@ -402,9 +468,13 @@ inline bool MemoryManager<T>::swapValues(T* address1, T* address2) {
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid swapValues operation: ";
+#endif
         if (address1 == nullptr || address2 == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         return false;
     }
@@ -427,12 +497,18 @@ inline bool MemoryManager<T>::reverseMemory(T* address, int size) {
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid reverseMemory operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return false;
     }
@@ -457,12 +533,18 @@ inline bool MemoryManager<T>::shiftMemory(T* address, int size, int shiftCount) 
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid shiftMemory operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return false;
     }
@@ -489,12 +571,18 @@ inline int MemoryManager<T>::calculateChecksum(const T* address, int size) {
         return checksum;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid calculateChecksum operation: ";
+#endif
         if (address == nullptr) {
+#ifdef DEBUG_MODE
             std::cerr << "Null pointer." << std::endl;
+#endif
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid size." << std::endl;
+#endif
         }
         return 0;
     }
@@ -517,7 +605,9 @@ inline T* MemoryManager<T>::allocateAndFill(int value, int size) {
         std::fill(newPtr, newPtr + size, value);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Memory allocation and fill failed" << std::endl;
+#endif
     }
     return newPtr;
 }
@@ -541,7 +631,9 @@ inline bool MemoryManager<T>::compareMemoryWithOffset(const T* address1, const T
         return std::equal(address1 + offset, address1 + size, address2 + offset);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid compareMemoryWithOffset operation." << std::endl;
+#endif
         return false;
     }
 }
@@ -566,12 +658,16 @@ inline const T* MemoryManager<T>::findValueFromEnd(const T* address, int value, 
             return &(*it);
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Value not found in memory." << std::endl;
+#endif
             return nullptr;
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid findValueFromEnd operation." << std::endl;
+#endif
         return nullptr;
     }
 }
@@ -598,7 +694,9 @@ inline void MemoryManager<T>::initializeMemoryWithRandomValues(T* address, int s
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid initializeMemoryWithRandomValues operation." << std::endl;
+#endif
     }
 }
 
@@ -622,7 +720,9 @@ inline bool MemoryManager<T>::swapMemoryWithOffset(T* address1, T* address2, int
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid swapMemoryWithOffset operation." << std::endl;
+#endif
         return false;
     }
 }
@@ -645,7 +745,9 @@ inline void MemoryManager<T>::shuffleMemory(T* address, int size) {
         std::shuffle(address, address + size, gen);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid shuffleMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -668,7 +770,9 @@ inline bool MemoryManager<T>::reverseMemoryWithOffset(T* address, int size, int 
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid reverseMemoryWithOffset operation." << std::endl;
+#endif
         return false;
     }
 }
@@ -699,12 +803,16 @@ inline T* MemoryManager<T>::resizeAndInitializeMemory(T* ptr, int oldSize, int n
             return newPtr;
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Memory reallocation and initialization failed" << std::endl;
+#endif
             return nullptr;
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid resizeAndInitializeMemory operation." << std::endl;
+#endif
         return nullptr;
     }
 }
@@ -726,7 +834,9 @@ inline void MemoryManager<T>::shiftMemoryCircular(T* address, int size, int shif
         std::rotate(address, address + (shiftCount % size + size) % size, address + size);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid shiftMemoryCircular operation." << std::endl;
+#endif
     }
 }
 
@@ -749,7 +859,9 @@ inline void MemoryManager<T>::deduplicateMemory(T* address, int size) {
         std::fill(last, address + size, 0);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid deduplicateMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -775,7 +887,9 @@ inline bool MemoryManager<T>::copyMemorySubarray(const T* source, T* destination
         return true;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid copyMemorySubarray operation." << std::endl;
+#endif
         return false;
     }
 }
@@ -800,7 +914,9 @@ inline void MemoryManager<T>::fillMemoryWithIncrementingValues(T* address, int s
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid fillMemoryWithIncrementingValues operation." << std::endl;
+#endif
     }
 }
 
@@ -825,7 +941,9 @@ inline void MemoryManager<T>::interleaveMemory(T* destAddress, const T* block1, 
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid interleaveMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -851,7 +969,9 @@ inline void MemoryManager<T>::fillMemoryWithIncrementingValues(T* address, int s
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid fillMemoryWithIncrementingValues operation." << std::endl;
+#endif
     }
 }
 
@@ -875,7 +995,9 @@ inline void MemoryManager<T>::xorMemory(const T* source1, const T* source2, T* d
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid xorMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -896,7 +1018,9 @@ inline void MemoryManager<T>::moveMemory(T* destination, const T* source, int si
         std::memmove(destination, source, size * sizeof(int));
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid moveMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -943,7 +1067,9 @@ inline const T* MemoryManager<T>::searchMemoryPattern(const T* address, const T*
         return std::search(address, address + size, pattern, pattern + patternSize);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid searchMemoryPattern operation." << std::endl;
+#endif
         return nullptr;
     }
 }
@@ -966,7 +1092,9 @@ inline void MemoryManager<T>::swapBytes(T* address, int size) {
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid swapBytes operation." << std::endl;
+#endif
     }
 }
 
@@ -993,7 +1121,9 @@ inline void MemoryManager<T>::printMemoryStatistics(const T* address, int size) 
         std::cout << "  Average Value: " << std::fixed << std::setprecision(2) << averageValue << std::endl;
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid printMemoryStatistics operation." << std::endl;
+#endif
     }
 }
 
@@ -1028,12 +1158,16 @@ inline T* MemoryManager<T>::compressMemory(const T* source, int size, int& compr
             return compressedPtr;
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Memory allocation for compressed data failed." << std::endl;
+#endif
             return nullptr;
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid compressMemory operation." << std::endl;
+#endif
         return nullptr;
     }
 }
@@ -1078,7 +1212,9 @@ inline T* MemoryManager<T>::decompressMemory(const T* compressedData, int compre
         }
     }
     else {
-        std::cerr << "Invalid decompressMemory operation." << std::endl;
+        #ifdef DEBUG_MODE
+            std::cerr << "Invalid decompressMemory operation." << std::endl;
+        #endif
         return nullptr;
     }
 }
@@ -1107,7 +1243,9 @@ inline void MemoryManager<T>::encryptMemory(T* address, int size, const std::str
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid encryptMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -1131,11 +1269,13 @@ inline void MemoryManager<T>::decryptMemory(T* address, int size, const std::str
         }
 
         for (int i = 0; i < size; ++i) {
-            address[i] ^= xorValues[i % key.size()];
+            address[i] ^= static_cast<int>(key[i % key.size()]) - '0';
         }
     }
     else {
-        std::cerr << "Invalid decryptMemory operation." << std::endl;
+#ifdef DEBUG_MODE
+                std::cerr << "Invalid decryptMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -1156,7 +1296,9 @@ inline void MemoryManager<T>::reverseMemoryInRange(T* address, int start, int en
         std::reverse(address + start, address + end + 1);
     }
     else {
-        std::cerr << "Invalid reverseMemoryInRange operation." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid reverseMemoryInRange operation." << std::endl;
+#endif
     }
 }
 
@@ -1177,7 +1319,9 @@ inline void MemoryManager<T>::rotateMemoryLeft(T* address, int size, int shiftCo
         std::rotate(address, address + shiftCount % size, address + size);
     }
     else {
-        std::cerr << "Invalid rotateMemoryLeft operation." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid rotateMemoryLeft operation." << std::endl;
+#endif
     }
 }
 
@@ -1199,7 +1343,9 @@ inline void MemoryManager<T>::rotateMemoryRight(T* address, int size, int shiftC
         std::rotate(address, address + size - shiftCount, address + size);
     }
     else {
-        std::cerr << "Invalid rotateMemoryRight operation." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid rotateMemoryRight operation." << std::endl;
+#endif
     }
 }
 
@@ -1221,7 +1367,9 @@ inline void MemoryManager<T>::uniqueMemory(T* address, int& size) {
         size = std::distance(address, newEnd);
     }
     else {
-        std::cerr << "Invalid uniqueMemory operation." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid uniqueMemory operation." << std::endl;
+#endif
     }
 }
 
@@ -1244,7 +1392,9 @@ inline void MemoryManager<T>::removeValue(T* address, int& size, int value) {
         size = std::distance(address, newEnd);
     }
     else {
-        std::cerr << "Invalid removeValue operation." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid removeValue operation." << std::endl;
+#endif
     }
 }
 
@@ -1267,7 +1417,9 @@ inline void MemoryManager<T>::removeAllOccurrences(T* address, int& size, int va
         size = std::distance(address, newEnd);
     }
     else {
-        std::cerr << "Invalid removeAllOccurrences operation." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid removeAllOccurrences operation." << std::endl;
+#endif
     }
 }
 
@@ -1297,7 +1449,9 @@ inline void MemoryManager<T>::resizeMemoryWithDefaultValue(T* address, int& size
         }
     }
     else {
-        std::cerr << "Invalid resizeMemoryWithDefaultValue operation." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid resizeMemoryWithDefaultValue operation." << std::endl;
+#endif
     }
 }
 
@@ -1341,7 +1495,10 @@ inline bool MemoryManager<T>::isMemoryAllocated(const T* address) {
 template <typename T>
 inline bool MemoryManager<T>::isMemoryInitialized(const T* address, int size) {
     if (address == nullptr || size <= 0) {
-        std::cerr << "Invalid isMemoryInitialized check: Null pointer or invalid size." << std::endl;
+#ifdef DEBUG_MODE
+            std::cerr << "Invalid isMemoryInitialized check: Null pointer or invalid size." << std::endl;
+#endif
+
         return false;
     }
 
@@ -1362,7 +1519,10 @@ inline bool MemoryManager<T>::isMemoryInitialized(const T* address, int size) {
 template <typename T>
 inline bool MemoryManager<T>::isMemoryEmpty(const T* address, int size) {
     if (address == nullptr || size <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryEmpty check: Null pointer or invalid size." << std::endl;
+#endif
+
         return false;
     }
 
@@ -1383,12 +1543,18 @@ inline bool MemoryManager<T>::isMemoryEmpty(const T* address, int size) {
 template <typename T>
 inline bool MemoryManager<T>::isMemoryReadable(const T* address, int size) {
     if (address == nullptr) {
-        std::cerr << "Invalid isMemoryReadable check: Null pointer." << std::endl;
+        #ifdef DEBUG_MODE
+            std::cerr << "Invalid isMemoryReadable check: Null pointer." << std::endl;
+        #endif
+
         return false;
     }
 
     if (size <= 0) {
-        std::cerr << "Invalid isMemoryReadable check: Invalid size." << std::endl;
+        #ifdef DEBUG_MODE
+            std::cerr << "Invalid isMemoryReadable check: Invalid size." << std::endl;
+        #endif
+
         return false;
     }
 
@@ -1409,12 +1575,16 @@ inline bool MemoryManager<T>::isMemoryReadable(const T* address, int size) {
 template <typename T>
 inline bool MemoryManager<T>::isMemoryWritable(T* address, int size) {
     if (address == nullptr) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryWritable check: Null pointer." << std::endl;
+#endif
         return false;
     }
 
     if (size <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryWritable check: Invalid size." << std::endl;
+#endif
         return false;
     }
 
@@ -1439,7 +1609,9 @@ inline void MemoryManager<T>::swapAdjacentValues(T* address, int size) {
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid swapAdjacentValues operation." << std::endl;
+#endif
     }
 }
 
@@ -1461,7 +1633,9 @@ inline void MemoryManager<T>::replaceValue(T* address, int size, int oldValue, i
         std::replace(address, address + size, oldValue, newValue);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid replaceValue operation." << std::endl;
+#endif
     }
 }
 
@@ -1481,7 +1655,9 @@ inline void MemoryManager<T>::replaceValue(T* address, int size, int oldValue, i
 template <typename T>
 inline T* MemoryManager<T>::mergeSortedMemory(const T* block1, int size1, const T* block2, int size2) {
     if (block1 == nullptr || size1 <= 0 || block2 == nullptr || size2 <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid mergeSortedMemory operation: Null or empty blocks." << std::endl;
+#endif
         return nullptr;
     }
 
@@ -1522,7 +1698,9 @@ inline T* MemoryManager<T>::mergeSortedMemory(const T* block1, int size1, const 
 template <typename T>
 inline bool MemoryManager<T>::isMemoryPalindrome(const T* address, int size) {
     if (address == nullptr || size <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryPalindrome operation: Null or empty block." << std::endl;
+#endif
         return false;
     }
 
@@ -1551,7 +1729,9 @@ inline bool MemoryManager<T>::isMemoryPalindrome(const T* address, int size) {
 template <typename T>
 inline int MemoryManager<T>::binarySearch(const T* sortedBlock, int size, int target) {
     if (sortedBlock == nullptr || size <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid binarySearch operation: Null or empty sorted block." << std::endl;
+#endif
         return -1;
     }
 
@@ -1593,7 +1773,9 @@ inline void MemoryManager<T>::rotateMemoryRangeLeft(T* address, int start, int e
         std::rotate(address + start, address + start + (shiftCount % (end - start + 1)), address + end + 1);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid rotateMemoryRangeLeft operation." << std::endl;
+#endif
     }
 }
 
@@ -1615,7 +1797,9 @@ inline void MemoryManager<T>::rotateMemoryRangeRight(T* address, int start, int 
         std::rotate(address + start, address + end - (shiftCount % (end - start + 1)) + 1, address + end + 1);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid rotateMemoryRangeRight operation." << std::endl;
+#endif
     }
 }
 
@@ -1640,7 +1824,9 @@ inline void MemoryManager<T>::swapAdjacentMemoryRanges(T* address, int range1Sta
         std::swap_ranges(address + range1Start, address + range1End + 1, address + range2Start);
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid swapAdjacentMemoryRanges operation." << std::endl;
+#endif
     }
 }
 
@@ -1681,7 +1867,9 @@ inline void MemoryManager<T>::threeWayPartition(T* address, int size, int pivotV
         }
     }
     else {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid threeWayPartition operation." << std::endl;
+#endif
     }
 }
 
@@ -1703,7 +1891,10 @@ inline void MemoryManager<T>::threeWayPartition(T* address, int size, int pivotV
 template <typename T>
 inline T* MemoryManager<T>::unionSortedMemory(const T* block1, int size1, const T* block2, int size2, int& unionSize) {
     if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid unionSortedMemory operation." << std::endl;
+#endif
+
         unionSize = 0;
         return nullptr;
     }
@@ -1737,7 +1928,9 @@ inline T* MemoryManager<T>::unionSortedMemory(const T* block1, int size1, const 
 template <typename T>
 inline T* MemoryManager<T>::differenceSortedMemory(const T* block1, int size1, const T* block2, int size2, int& differenceSize) {
     if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid differenceSortedMemory operation." << std::endl;
+#endif
         differenceSize = 0;
         return nullptr;
     }
@@ -1771,7 +1964,9 @@ inline T* MemoryManager<T>::differenceSortedMemory(const T* block1, int size1, c
 template <typename T>
 inline T* MemoryManager<T>::symmetricDifferenceSortedMemory(const T* block1, int size1, const T* block2, int size2, int& symDiffSize) {
     if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid symmetricDifferenceSortedMemory operation." << std::endl;
+#endif
         symDiffSize = 0;
         return nullptr;
     }
@@ -1803,7 +1998,9 @@ inline T* MemoryManager<T>::symmetricDifferenceSortedMemory(const T* block1, int
 template <typename T>
 inline bool MemoryManager<T>::isSubsetSortedMemory(const T* potentialSubset, int subsetSize, const T* set, int setSize) {
     if (potentialSubset == nullptr || subsetSize <= 0 || set == nullptr || setSize <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isSubsetSortedMemory operation." << std::endl;
+#endif
         return false;
     }
 
@@ -1825,7 +2022,9 @@ inline bool MemoryManager<T>::isSubsetSortedMemory(const T* potentialSubset, int
 template <typename T>
 inline bool MemoryManager<T>::isMemoryStrictlyIncreasing(const T* address, int size) {
     if (address == nullptr || size <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryStrictlyIncreasing operation." << std::endl;
+#endif
         return false;
     }
 
@@ -1847,7 +2046,9 @@ inline bool MemoryManager<T>::isMemoryStrictlyIncreasing(const T* address, int s
 template <typename T>
 inline bool MemoryManager<T>::isMemoryStrictlyDecreasing(const T* address, int size) {
     if (address == nullptr || size <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryStrictlyDecreasing operation." << std::endl;
+#endif
         return false;
     }
 
@@ -1872,7 +2073,9 @@ inline bool MemoryManager<T>::isMemoryStrictlyDecreasing(const T* address, int s
 template <typename T>
 inline bool MemoryManager<T>::isMemoryPlateau(const T* address, int size, int& plateauStart, int& plateauEnd) {
     if (address == nullptr || size <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryPlateau operation." << std::endl;
+#endif
         return false;
     }
 
@@ -1910,7 +2113,9 @@ inline bool MemoryManager<T>::isMemoryPlateau(const T* address, int size, int& p
 template <typename T>
 inline bool MemoryManager<T>::isSubsequence(const T* sequence, int seqSize, const T* subsequence, int subseqSize) {
     if (sequence == nullptr || subsequence == nullptr || seqSize < subseqSize || subseqSize <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isSubsequence operation." << std::endl;
+#endif
         return false;
     }
 
@@ -1933,7 +2138,9 @@ inline bool MemoryManager<T>::isSubsequence(const T* sequence, int seqSize, cons
 template <typename T>
 inline void MemoryManager<T>::reverseMemoryWithPreservation(T* address, int size, const int* subblockSizes, int numSubblocks) {
     if (address == nullptr || size <= 0 || subblockSizes == nullptr || numSubblocks <= 0) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid reverseMemoryWithPreservation operation." << std::endl;
+#endif
         return;
     }
 
@@ -1945,7 +2152,9 @@ inline void MemoryManager<T>::reverseMemoryWithPreservation(T* address, int size
             start += subblockSize;
         }
         else {
+#ifdef DEBUG_MODE
             std::cerr << "Invalid subblock size at index " << i << "." << std::endl;
+#endif
             return;
         }
     }
@@ -1968,7 +2177,9 @@ inline void MemoryManager<T>::reverseMemoryWithPreservation(T* address, int size
 template <typename T>
 inline bool MemoryManager<T>::isMemoryMountain(const T* address, int size, int& peakIndex) {
     if (address == nullptr || size <= 2) {
+#ifdef DEBUG_MODE
         std::cerr << "Invalid isMemoryMountain operation." << std::endl;
+#endif
         return false;
     }
 

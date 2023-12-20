@@ -1,5 +1,6 @@
 #ifndef PTRX_H
 #define PTRX_H
+#define DEBUG_MODE
 
 #include <iostream>
 #include <algorithm>
