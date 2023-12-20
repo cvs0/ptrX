@@ -11,12 +11,17 @@
 #include <vector> 
 
 template <typename T>
-MemoryManager<T>::MemoryManager(bool log) : logging(log) {
-    if (logging) {
+bool MemoryManager<T>::logging = false;
+
+// Constructor definition
+template <typename T>
+MemoryManager<T>::MemoryManager(bool log) {
+    if (log) {
         std::cout << "MemoryManager constructed" << std::endl;
     }
 }
 
+// Destructor definition
 template <typename T>
 MemoryManager<T>::~MemoryManager() {
     if (logging) {
@@ -86,6 +91,7 @@ bool MemoryManager<T>::readValue(const T* address, int& value, int size) {
         return false;
     }
 }
+
 
 template <typename T>
 T* MemoryManager<T>::resizeMemory(T* ptr, int newSize) {
@@ -668,18 +674,6 @@ void MemoryManager<T>::rotateMemoryRight(T* address, int size, int shiftCount) {
     }
     else {
         std::cerr << "Invalid rotateMemoryRight operation." << std::endl;
-    }
-}
-
-template <typename T>
-void MemoryManager<T>::shuffleMemory(T* address, int size) {
-    if (address != nullptr && size > 0) {
-        std::random_device rd;
-        std::mt19937 g(rd());
-        std::shuffle(address, address + size, g);
-    }
-    else {
-        std::cerr << "Invalid shuffleMemory operation." << std::endl;
     }
 }
 

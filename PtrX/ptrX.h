@@ -121,4 +121,5 @@ private:
     static bool logging;
 };
 
+
 #endif // PTRX_H
