@@ -113,6 +113,10 @@ public:
 
     bool isMemoryPlateau(const T* address, int size, int& plateauStart, int& plateauEnd);
 
+    bool isSubsequence(const T* sequence, int seqSize, const T* subsequence, int subseqSize);
+
+    void reverseMemoryWithPreservation(T* address, int size, const int* subblockSizes, int numSubblocks);
+
     bool isMemoryMountain(const T* address, int size, int& peakIndex);
 
 

@@ -748,15 +748,9 @@ inline bool MemoryManager<T>::isMemoryInitialized(const T* address, int size) {
         return false;
     }
 
-    for (int i = 0; i < size; ++i) {
-        if (address[i] == 0) {
-            std::cerr << "Invalid isMemoryInitialized check: Memory contains zero at index " << i << "." << std::endl;
-            return false;
-        }
-    }
-
-    return true;
+    return !std::any_of(address, address + size, [](const T& value) { return value == 0; });
 }
+
 
 template <typename T>
 inline bool MemoryManager<T>::isMemoryEmpty(const T* address, int size) {
@@ -765,14 +759,7 @@ inline bool MemoryManager<T>::isMemoryEmpty(const T* address, int size) {
         return false;
     }
 
-    for (int i = 0; i < size; ++i) {
-        if (address[i] != 0) {
-            std::cerr << "Invalid isMemoryEmpty check: Memory contains non-zero value at index " << i << "." << std::endl;
-            return false;
-        }
-    }
-
-    return true;
+    return std::all_of(address, address + size, [](const T& value) { return value == 0; });
 }
 
 template <typename T>
@@ -1066,6 +1053,37 @@ inline bool MemoryManager<T>::isMemoryPlateau(const T* address, int size, int& p
     }
 
     return plateauStart != -1 && plateauEnd != -1;
+}
+
+template <typename T>
+inline bool MemoryManager<T>::isSubsequence(const T* sequence, int seqSize, const T* subsequence, int subseqSize) {
+    if (sequence == nullptr || subsequence == nullptr || seqSize < subseqSize || subseqSize <= 0) {
+        std::cerr << "Invalid isSubsequence operation." << std::endl;
+        return false;
+    }
+
+    return std::search(sequence, sequence + seqSize, subsequence, subsequence + subseqSize) != sequence + seqSize;
+}
+
+template <typename T>
+inline void MemoryManager<T>::reverseMemoryWithPreservation(T* address, int size, const int* subblockSizes, int numSubblocks) {
+    if (address == nullptr || size <= 0 || subblockSizes == nullptr || numSubblocks <= 0) {
+        std::cerr << "Invalid reverseMemoryWithPreservation operation." << std::endl;
+        return;
+    }
+
+    int start = 0;
+    for (int i = 0; i < numSubblocks; ++i) {
+        int subblockSize = subblockSizes[i];
+        if (start + subblockSize <= size) {
+            std::reverse(address + start, address + start + subblockSize);
+            start += subblockSize;
+        }
+        else {
+            std::cerr << "Invalid subblock size at index " << i << "." << std::endl;
+            return;
+        }
+    }
 }
 
 template <typename T>
