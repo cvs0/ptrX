@@ -121,5 +121,6 @@ private:
     static bool logging;
 };
 
+#include "ptrX_impl.h"
 
 #endif // PTRX_H

@@ -1,4 +1,4 @@
-#include "ptrX.cpp"
+#include "ptrX.h"
 #include <iostream>
 
 int main() {
