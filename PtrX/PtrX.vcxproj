@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ptrX.cpp" />
+    <ClCompile Include="ptrX_impl.h" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>

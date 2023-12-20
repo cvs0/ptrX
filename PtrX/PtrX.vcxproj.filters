@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ptrX.cpp">
+    <ClCompile Include="ptrX_impl.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test.cpp">
