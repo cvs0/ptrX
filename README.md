@@ -23,7 +23,7 @@ The ptrX library provides a set of utility functions for efficient and safe mani
 To start using ptrX, include the `ptrX.h` header file in your C++ project. The library is designed to be simple to integrate and use.
 
 ```cpp
-#include "ptrX.cpp"
+#include "ptrX.h"
 #include <iostream>
 
 int main() {
@@ -39,7 +39,6 @@ int main() {
 
     return 0;
 }
-
 ```
 
 ## Documentation
