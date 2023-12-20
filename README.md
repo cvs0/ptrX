@@ -23,27 +23,23 @@ The ptrX library provides a set of utility functions for efficient and safe mani
 To start using ptrX, include the `ptrX.h` header file in your C++ project. The library is designed to be simple to integrate and use.
 
 ```cpp
-#include "ptrX.h"
+#include "ptrX.cpp"
 #include <iostream>
 
 int main() {
-    // Initialize MemoryManager
-    MemoryManager memoryManager;
+    MemoryManager<int> memoryManager(true);
 
-    // Allocate memory
     int* data = memoryManager.allocateMemory(10);
 
-    // Write and read values
     memoryManager.writeValue(data, 42, 10);
-    int value = memoryManager.readValue(data);
+    int value;
+    memoryManager.readValue(data, value, 1);
 
-    // Deallocate memory
     memoryManager.deallocateMemory(data);
-
-    // ... More examples and features
 
     return 0;
 }
+
 ```
 
 ## Documentation
