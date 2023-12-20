@@ -7,116 +7,118 @@
 #include <vector>
 #include <iterator>
 
+template <typename T>
 class MemoryManager {
 public:
     // Memory Management
-    MemoryManager();
+    MemoryManager(bool log);
     ~MemoryManager();
-    int* allocateMemory(int size);
-    void deallocateMemory(int* ptr);
+    T* allocateMemory(int size);
+    void deallocateMemory(T* ptr);
 
     // Basic Memory Operations
-    bool writeValue(int* address, int value, int size);
-    bool readValue(const int* address, int& value, int size);
-    bool copyMemory(const int* source, int* destination, int size);
-    bool fillMemory(int* address, int value, int size);
-    int* resizeMemory(int* ptr, int newSize);
+    bool writeValue(T* address, int value, int size);
+    bool readValue(const T* address, int& value, int size);
+    bool copyMemory(const T* source, T* destination, int size);
+    bool fillMemory(T* address, int value, int size);
+    T* resizeMemory(T* ptr, int newSize);
 
     // Memory Comparison and Manipulation
-    bool compareMemory(const int* address1, const int* address2, int size);
-    bool zeroMemory(int* address, int size);
-    int* allocateAndCopy(const int* source, int size);
-    const int* findValue(const int* address, int value, int size);
-    bool swapValues(int* address1, int* address2);
-    bool reverseMemory(int* address, int size);
-    bool shiftMemory(int* address, int size, int shiftCount);
-    int calculateChecksum(const int* address, int size);
-    int* allocateAndFill(int value, int size);
-    bool compareMemoryWithOffset(const int* address1, const int* address2, int size, int offset);
-    const int* findValueFromEnd(const int* address, int value, int size);
+    bool compareMemory(const T* address1, const T* address2, int size);
+    bool zeroMemory(T* address, int size);
+    T* allocateAndCopy(const T* source, int size);
+    const T* findValue(const T* address, int value, int size);
+    bool swapValues(T* address1, T* address2);
+    bool reverseMemory(T* address, int size);
+    bool shiftMemory(T* address, int size, int shiftCount);
+    int calculateChecksum(const T* address, int size);
+    T* allocateAndFill(int value, int size);
+    bool compareMemoryWithOffset(const T* address1, const T* address2, int size, int offset);
+    const T* findValueFromEnd(const T* address, int value, int size);
 
     // Additional Memory Operations
-    void initializeMemoryWithRandomValues(int* address, int size);
-    bool swapMemoryWithOffset(int* address1, int* address2, int size, int offset);
-    void shuffleMemory(int* address, int size);
-    bool reverseMemoryWithOffset(int* address, int size, int offset);
-    int* resizeAndInitializeMemory(int* ptr, int oldSize, int newSize, int initValue);
-    void shiftMemoryCircular(int* address, int size, int shiftCount);
-    void deduplicateMemory(int* address, int size);
-    bool copyMemorySubarray(const int* source, int* destination, int sourceStart, int destStart, int count);
-    void fillMemoryWithIncrementingValues(int* address, int size, int startValue, int increment);
-    void interleaveMemory(const int* source1, const int* source2, int* destination, int size);
-    void xorMemory(const int* source1, const int* source2, int* destination, int size);
-    void moveMemory(int* destination, const int* source, int size);
-    bool zeroMemoryWithOffset(int* address, int size, int offset);
-    const int* searchMemoryPattern(const int* address, const int* pattern, int size, int patternSize);
+    void initializeMemoryWithRandomValues(T* address, int size);
+    bool swapMemoryWithOffset(T* address1, T* address2, int size, int offset);
+    void shuffleMemory(T* address, int size);
+    bool reverseMemoryWithOffset(T* address, int size, int offset);
+    T* resizeAndInitializeMemory(T* ptr, int oldSize, int newSize, int initValue);
+    void shiftMemoryCircular(T* address, int size, int shiftCount);
+    void deduplicateMemory(T* address, int size);
+    bool copyMemorySubarray(const T* source, T* destination, int sourceStart, int destStart, int count);
+    void fillMemoryWithIncrementingValues(T* address, int size, int startValue, int increment);
+    void interleaveMemory(const T* source1, const T* source2, T* destination, int size);
+    void xorMemory(const T* source1, const T* source2, T* destination, int size);
+    void moveMemory(T* destination, const T* source, int size);
+    bool zeroMemoryWithOffset(T* address, int size, int offset);
+    const T* searchMemoryPattern(const T* address, const T* pattern, int size, int patternSize);
 
     // Advanced Memory Operations
-    void swapBytes(int* address, int size);
-    void printMemoryStatistics(const int* address, int size);
-    int* compressMemory(const int* source, int size, int& compressedSize);
-    int* decompressMemory(const int* compressedData, int compressedSize, int originalSize);
-    void encryptMemory(int* address, int size, const std::string& key);
-    void decryptMemory(int* address, int size, const std::string& key);
+    void swapBytes(T* address, int size);
+    void printMemoryStatistics(const T* address, int size);
+    T* compressMemory(const T* source, int size, int& compressedSize);
+    T* decompressMemory(const T* compressedData, int compressedSize, int originalSize);
+    void encryptMemory(T* address, int size, const std::string& key);
+    void decryptMemory(T* address, int size, const std::string& key);
 
     // Memory Range Operations
-    void reverseMemoryInRange(int* address, int start, int end);
-    void rotateMemoryLeft(int* address, int size, int shiftCount);
-    void rotateMemoryRight(int* address, int size, int shiftCount);
+    void reverseMemoryInRange(T* address, int start, int end);
+    void rotateMemoryLeft(T* address, int size, int shiftCount);
+    void rotateMemoryRight(T* address, int size, int shiftCount);
 
     // Memory Set Operations
-    void uniqueMemory(int* address, int& size);
-    void removeValue(int* address, int& size, int value);
-    void removeAllOccurrences(int* address, int& size, int value);
-    void resizeMemoryWithDefaultValue(int* address, int& size, int newSize, int defaultValue);
+    void uniqueMemory(T* address, int& size);
+    void removeValue(T* address, int& size, int value);
+    void removeAllOccurrences(T* address, int& size, int value);
+    void resizeMemoryWithDefaultValue(T* address, int& size, int newSize, int defaultValue);
 
     // Memory Checks
-    bool isMemoryNull(const int* address);
-    bool isMemoryAllocated(const int* address);
-    bool isMemoryInitialized(const int* address, int size);
-    bool isMemoryEmpty(const int* address, int size);
-    bool isMemoryReadable(const int* address, int size);
-    bool isMemoryWritable(int* address, int size);
+    bool isMemoryNull(const T* address);
+    bool isMemoryAllocated(const T* address);
+    bool isMemoryInitialized(const T* address, int size);
+    bool isMemoryEmpty(const T* address, int size);
+    bool isMemoryReadable(const T* address, int size);
+    bool isMemoryWritable(T* address, int size);
 
     // Advanced Memory Operations
 
-    void swapAdjacentValues(int* address, int size);
+    void swapAdjacentValues(T* address, int size);
 
-    void replaceValue(int* address, int size, int oldValue, int newValue);
+    void replaceValue(T* address, int size, int oldValue, int newValue);
 
-    int* mergeSortedMemory(const int* block1, int size1, const int* block2, int size2);
+    T* mergeSortedMemory(const T* block1, int size1, const T* block2, int size2);
 
-    bool isMemoryPalindrome(const int* address, int size);
+    bool isMemoryPalindrome(const T* address, int size);
 
-    int binarySearch(const int* sortedBlock, int size, int key);
+    int binarySearch(const T* sortedBlock, int size, int key);
 
-    void rotateMemoryRangeLeft(int* address, int start, int end, int shiftCount);
+    void rotateMemoryRangeLeft(T* address, int start, int end, int shiftCount);
 
-    void rotateMemoryRangeRight(int* address, int start, int end, int shiftCount);
+    void rotateMemoryRangeRight(T* address, int start, int end, int shiftCount);
 
-    void swapAdjacentMemoryRanges(int* address, int range1Start, int range1End, int range2Start, int range2End);
+    void swapAdjacentMemoryRanges(T* address, int range1Start, int range1End, int range2Start, int range2End);
 
-    void threeWayPartition(int* address, int size, int pivotValue, int& lowerBound, int& upperBound);
+    void threeWayPartition(T* address, int size, int pivotValue, int& lowerBound, int& upperBound);
 
-    int* unionSortedMemory(const int* block1, int size1, const int* block2, int size2, int& unionSize);
+    T* unionSortedMemory(const T* block1, int size1, const T* block2, int size2, int& unionSize);
 
-    int* differenceSortedMemory(const int* block1, int size1, const int* block2, int size2, int& differenceSize);
+    T* differenceSortedMemory(const T* block1, int size1, const T* block2, int size2, int& differenceSize);
 
-    int* symmetricDifferenceSortedMemory(const int* block1, int size1, const int* block2, int size2, int& symDiffSize);
+    T* symmetricDifferenceSortedMemory(const T* block1, int size1, const T* block2, int size2, int& symDiffSize);
 
-    bool isSubsetSortedMemory(const int* potentialSubset, int subsetSize, const int* set, int setSize);
+    bool isSubsetSortedMemory(const T* potentialSubset, int subsetSize, const T* set, int setSize);
 
-    bool isMemoryStrictlyIncreasing(const int* address, int size);
+    bool isMemoryStrictlyIncreasing(const T* address, int size);
 
-    bool isMemoryStrictlyDecreasing(const int* address, int size);
+    bool isMemoryStrictlyDecreasing(const T* address, int size);
 
-    bool isMemoryPlateau(const int* address, int size, int& plateauStart, int& plateauEnd);
+    bool isMemoryPlateau(const T* address, int size, int& plateauStart, int& plateauEnd);
 
-    bool isMemoryMountain(const int* address, int size, int& peakIndex);
+    bool isMemoryMountain(const T* address, int size, int& peakIndex);
 
 
 private:
     int size;
+    static bool logging;
 };
 
 #endif // PTRX_H

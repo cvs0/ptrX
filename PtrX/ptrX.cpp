@@ -10,26 +10,37 @@
 #include <bitset>
 #include <vector> 
 
-MemoryManager::MemoryManager() {
-    std::cout << "MemoryManager constructed" << std::endl;
+template <typename T>
+MemoryManager<T>::MemoryManager(bool log) : logging(log) {
+    if (logging) {
+        std::cout << "MemoryManager constructed" << std::endl;
+    }
 }
 
-MemoryManager::~MemoryManager() {
-    std::cout << "MemoryManager destructed" << std::endl;
+template <typename T>
+MemoryManager<T>::~MemoryManager() {
+    if (logging) {
+        std::cout << "MemoryManager destructed" << std::endl;
+    }
 }
 
-int* MemoryManager::allocateMemory(int size) {
-    int* ptr = new (std::nothrow) int[size];
+template <typename T>
+T* MemoryManager<T>::allocateMemory(int size) {
+    T* ptr = new (std::nothrow) int[size];
     if (ptr == nullptr) {
         std::cerr << "Memory allocation failed" << std::endl;
     }
     return ptr;
 }
 
-void MemoryManager::deallocateMemory(int* ptr) {
+template <typename T>
+void MemoryManager<T>::deallocateMemory(T* ptr) {
     if (ptr != nullptr) {
         delete[] ptr;
-        std::cout << "Deallocated memory at address " << static_cast<void*>(ptr) << std::endl;
+
+        if (logging) {
+            std::cout << "Deallocated memory at address " << static_cast<void*>(ptr) << std::endl;
+        }
         ptr = nullptr;
     }
     else {
@@ -37,8 +48,8 @@ void MemoryManager::deallocateMemory(int* ptr) {
     }
 }
 
-
-bool MemoryManager::writeValue(int* address, int value, int size) {
+template <typename T>
+bool MemoryManager<T>::writeValue(T* address, int value, int size) {
     if (address != nullptr && size > 0) {
         *address = value;
         return true;
@@ -55,7 +66,8 @@ bool MemoryManager::writeValue(int* address, int value, int size) {
     }
 }
 
-bool MemoryManager::readValue(const int* address, int& value, int size) {
+template <typename T>
+bool MemoryManager<T>::readValue(const T* address, int& value, int size) {
     if (address != nullptr && size > 0 && reinterpret_cast<std::uintptr_t>(address) % alignof(int) == 0) {
         value = *address;
         return true;
@@ -75,9 +87,10 @@ bool MemoryManager::readValue(const int* address, int& value, int size) {
     }
 }
 
-int* MemoryManager::resizeMemory(int* ptr, int newSize) {
+template <typename T>
+T* MemoryManager<T>::resizeMemory(T* ptr, int newSize) {
     if (ptr != nullptr && newSize > 0) {
-        int* newPtr = new (std::nothrow) int[newSize];
+        T* newPtr = new (std::nothrow) int[newSize];
         if (newPtr != nullptr) {
             std::memcpy(newPtr, ptr, std::min(sizeof(int) * newSize, sizeof(int) * sizeof(ptr)));
             delete[] ptr;
@@ -100,7 +113,8 @@ int* MemoryManager::resizeMemory(int* ptr, int newSize) {
     }
 }
 
-bool MemoryManager::copyMemory(const int* source, int* destination, int size) {
+template <typename T>
+bool MemoryManager<T>::copyMemory(const T* source, T* destination, int size) {
     if (source != nullptr && destination != nullptr && size > 0) {
         std::memcpy(destination, source, size * sizeof(int));
         return true;
@@ -117,7 +131,8 @@ bool MemoryManager::copyMemory(const int* source, int* destination, int size) {
     }
 }
 
-bool MemoryManager::fillMemory(int* address, int value, int size) {
+template <typename T>
+bool MemoryManager<T>::fillMemory(T* address, int value, int size) {
     if (address != nullptr && size > 0) {
         std::fill(address, address + size, value);
         return true;
@@ -134,7 +149,8 @@ bool MemoryManager::fillMemory(int* address, int value, int size) {
     }
 }
 
-const int* MemoryManager::findValue(const int* address, int value, int size) {
+template <typename T>
+const T* MemoryManager<T>::findValue(const T* address, int value, int size) {
     if (address != nullptr && size > 0) {
         auto it = std::find(address, address + size, value);
         if (it != address + size) {
@@ -157,7 +173,8 @@ const int* MemoryManager::findValue(const int* address, int value, int size) {
     }
 }
 
-bool MemoryManager::compareMemory(const int* address1, const int* address2, int size) {
+template <typename T>
+bool MemoryManager<T>::compareMemory(const T* address1, const T* address2, int size) {
     if (address1 != nullptr && address2 != nullptr && size > 0) {
         return std::equal(address1, address1 + size, address2);
     }
@@ -173,7 +190,8 @@ bool MemoryManager::compareMemory(const int* address1, const int* address2, int 
     }
 }
 
-bool MemoryManager::zeroMemory(int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::zeroMemory(T* address, int size) {
     if (address != nullptr && size > 0) {
         std::fill(address, address + size, 0);
         return true;
@@ -190,9 +208,10 @@ bool MemoryManager::zeroMemory(int* address, int size) {
     }
 }
 
-int* MemoryManager::allocateAndCopy(const int* source, int size) {
+template <typename T>
+T* MemoryManager<T>::allocateAndCopy(const T* source, int size) {
     if (source != nullptr && size > 0) {
-        int* newPtr = allocateMemory(size);
+        T* newPtr = allocateMemory(size);
         if (newPtr != nullptr) {
             std::memcpy(newPtr, source, size * sizeof(int));
             return newPtr;
@@ -214,23 +233,8 @@ int* MemoryManager::allocateAndCopy(const int* source, int size) {
     }
 }
 
-const int* MemoryManager::findValue(const int* address, int value, int size) {
-    if (address != nullptr && size > 0) {
-        return std::find(address, address + size, value);
-    }
-    else {
-        std::cerr << "Invalid findValue operation: ";
-        if (address == nullptr) {
-            std::cerr << "Null pointer." << std::endl;
-        }
-        else {
-            std::cerr << "Invalid size." << std::endl;
-        }
-        return nullptr;
-    }
-}
-
-bool MemoryManager::swapValues(int* address1, int* address2) {
+template <typename T>
+bool MemoryManager<T>::swapValues(T* address1, T* address2) {
     if (address1 != nullptr && address2 != nullptr) {
         std::swap(*address1, *address2);
         return true;
@@ -244,7 +248,8 @@ bool MemoryManager::swapValues(int* address1, int* address2) {
     }
 }
 
-bool MemoryManager::reverseMemory(int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::reverseMemory(T* address, int size) {
     if (address != nullptr && size > 0) {
         std::reverse(address, address + size);
         return true;
@@ -261,7 +266,8 @@ bool MemoryManager::reverseMemory(int* address, int size) {
     }
 }
 
-bool MemoryManager::shiftMemory(int* address, int size, int shiftCount) {
+template <typename T>
+bool MemoryManager<T>::shiftMemory(T* address, int size, int shiftCount) {
     if (address != nullptr && size > 0) {
         std::rotate(address, address + shiftCount, address + size);
         return true;
@@ -278,7 +284,8 @@ bool MemoryManager::shiftMemory(int* address, int size, int shiftCount) {
     }
 }
 
-int MemoryManager::calculateChecksum(const int* address, int size) {
+template <typename T>
+int MemoryManager<T>::calculateChecksum(const T* address, int size) {
     if (address != nullptr && size > 0) {
         int checksum = 0;
         for (int i = 0; i < size; ++i) {
@@ -298,8 +305,9 @@ int MemoryManager::calculateChecksum(const int* address, int size) {
     }
 }
 
-int* MemoryManager::allocateAndFill(int value, int size) {
-    int* newPtr = allocateMemory(size);
+template <typename T>
+T* MemoryManager<T>::allocateAndFill(int value, int size) {
+    T* newPtr = allocateMemory(size);
     if (newPtr != nullptr) {
         std::fill(newPtr, newPtr + size, value);
     }
@@ -309,7 +317,8 @@ int* MemoryManager::allocateAndFill(int value, int size) {
     return newPtr;
 }
 
-bool MemoryManager::compareMemoryWithOffset(const int* address1, const int* address2, int size, int offset) {
+template <typename T>
+bool MemoryManager<T>::compareMemoryWithOffset(const T* address1, const T* address2, int size, int offset) {
     if (address1 != nullptr && address2 != nullptr && size > 0 && offset >= 0 && offset < size) {
         return std::equal(address1 + offset, address1 + size, address2 + offset);
     }
@@ -319,7 +328,8 @@ bool MemoryManager::compareMemoryWithOffset(const int* address1, const int* addr
     }
 }
 
-const int* MemoryManager::findValueFromEnd(const int* address, int value, int size) {
+template <typename T>
+const T* MemoryManager<T>::findValueFromEnd(const T* address, int value, int size) {
     if (address != nullptr && size > 0) {
         auto it = std::find(std::make_reverse_iterator(address + size), std::make_reverse_iterator(address), value);
         if (it != std::make_reverse_iterator(address)) {
@@ -336,7 +346,8 @@ const int* MemoryManager::findValueFromEnd(const int* address, int value, int si
     }
 }
 
-void MemoryManager::initializeMemoryWithRandomValues(int* address, int size) {
+template <typename T>
+void MemoryManager<T>::initializeMemoryWithRandomValues(T* address, int size) {
     if (address != nullptr && size > 0) {
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -351,7 +362,8 @@ void MemoryManager::initializeMemoryWithRandomValues(int* address, int size) {
     }
 }
 
-bool MemoryManager::swapMemoryWithOffset(int* address1, int* address2, int size, int offset) {
+template <typename T>
+bool MemoryManager<T>::swapMemoryWithOffset(T* address1, T* address2, int size, int offset) {
     if (address1 != nullptr && address2 != nullptr && size > 0 && offset >= 0 && offset < size) {
         std::swap_ranges(address1 + offset, address1 + size, address2 + offset);
         return true;
@@ -362,7 +374,8 @@ bool MemoryManager::swapMemoryWithOffset(int* address1, int* address2, int size,
     }
 }
 
-void MemoryManager::shuffleMemory(int* address, int size) {
+template <typename T>
+void MemoryManager<T>::shuffleMemory(T* address, int size) {
     if (address != nullptr && size > 0) {
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -373,7 +386,8 @@ void MemoryManager::shuffleMemory(int* address, int size) {
     }
 }
 
-bool MemoryManager::reverseMemoryWithOffset(int* address, int size, int offset) {
+template <typename T>
+bool MemoryManager<T>::reverseMemoryWithOffset(T* address, int size, int offset) {
     if (address != nullptr && size > 0 && offset >= 0 && offset < size) {
         std::reverse(address + offset, address + size);
         return true;
@@ -384,9 +398,10 @@ bool MemoryManager::reverseMemoryWithOffset(int* address, int size, int offset) 
     }
 }
 
-int* MemoryManager::resizeAndInitializeMemory(int* ptr, int oldSize, int newSize, int initValue) {
+template <typename T>
+T* MemoryManager<T>::resizeAndInitializeMemory(T* ptr, int oldSize, int newSize, int initValue) {
     if (ptr != nullptr && oldSize > 0 && newSize > 0) {
-        int* newPtr = new (std::nothrow) int[newSize];
+        T* newPtr = new (std::nothrow) int[newSize];
         if (newPtr != nullptr) {
             std::copy(ptr, ptr + std::min(oldSize, newSize), newPtr);
             std::fill(newPtr + oldSize, newPtr + newSize, initValue);
@@ -404,7 +419,8 @@ int* MemoryManager::resizeAndInitializeMemory(int* ptr, int oldSize, int newSize
     }
 }
 
-void MemoryManager::shiftMemoryCircular(int* address, int size, int shiftCount) {
+template <typename T>
+void MemoryManager<T>::shiftMemoryCircular(T* address, int size, int shiftCount) {
     if (address != nullptr && size > 0) {
         std::rotate(address, address + (shiftCount % size + size) % size, address + size);
     }
@@ -413,7 +429,8 @@ void MemoryManager::shiftMemoryCircular(int* address, int size, int shiftCount) 
     }
 }
 
-void MemoryManager::deduplicateMemory(int* address, int size) {
+template <typename T>
+void MemoryManager<T>::deduplicateMemory(T* address, int size) {
     if (address != nullptr && size > 0) {
         std::sort(address, address + size);
         auto last = std::unique(address, address + size);
@@ -424,7 +441,8 @@ void MemoryManager::deduplicateMemory(int* address, int size) {
     }
 }
 
-bool MemoryManager::copyMemorySubarray(const int* source, int* destination, int sourceStart, int destStart, int count) {
+template <typename T>
+bool MemoryManager<T>::copyMemorySubarray(const T* source, T* destination, int sourceStart, int destStart, int count) {
     if (source != nullptr && destination != nullptr && sourceStart >= 0 && destStart >= 0 && count > 0) {
         std::copy(source + sourceStart, source + sourceStart + count, destination + destStart);
         return true;
@@ -435,7 +453,8 @@ bool MemoryManager::copyMemorySubarray(const int* source, int* destination, int 
     }
 }
 
-void MemoryManager::fillMemoryWithIncrementingValues(int* address, int size, int startValue, int increment) {
+template <typename T>
+void MemoryManager<T>::fillMemoryWithIncrementingValues(T* address, int size, int startValue, int increment) {
     if (address != nullptr && size > 0) {
         for (int i = 0; i < size; ++i) {
             address[i] = startValue + i * increment;
@@ -446,7 +465,8 @@ void MemoryManager::fillMemoryWithIncrementingValues(int* address, int size, int
     }
 }
 
-void MemoryManager::interleaveMemory(const int* source1, const int* source2, int* destination, int size) {
+template <typename T>
+void MemoryManager<T>::interleaveMemory(const T* source1, const T* source2, T* destination, int size) {
     if (source1 != nullptr && source2 != nullptr && destination != nullptr && size > 0) {
         for (int i = 0; i < size; ++i) {
             destination[i * 2] = source1[i];
@@ -458,7 +478,8 @@ void MemoryManager::interleaveMemory(const int* source1, const int* source2, int
     }
 }
 
-void MemoryManager::xorMemory(const int* source1, const int* source2, int* destination, int size) {
+template <typename T>
+void MemoryManager<T>::xorMemory(const T* source1, const T* source2, T* destination, int size) {
     if (source1 != nullptr && source2 != nullptr && destination != nullptr && size > 0) {
         for (int i = 0; i < size; ++i) {
             destination[i] = source1[i] ^ source2[i];
@@ -469,7 +490,8 @@ void MemoryManager::xorMemory(const int* source1, const int* source2, int* desti
     }
 }
 
-void MemoryManager::moveMemory(int* destination, const int* source, int size) {
+template <typename T>
+void MemoryManager<T>::moveMemory(T* destination, const T* source, int size) {
     if (destination != nullptr && source != nullptr && size > 0) {
         std::memmove(destination, source, size * sizeof(int));
     }
@@ -478,7 +500,8 @@ void MemoryManager::moveMemory(int* destination, const int* source, int size) {
     }
 }
 
-bool MemoryManager::zeroMemoryWithOffset(int* address, int size, int offset) {
+template <typename T>
+bool MemoryManager<T>::zeroMemoryWithOffset(T* address, int size, int offset) {
     if (address != nullptr && size > 0 && offset >= 0 && offset < size) {
         std::fill(address + offset, address + size, 0);
         return true;
@@ -489,7 +512,8 @@ bool MemoryManager::zeroMemoryWithOffset(int* address, int size, int offset) {
     }
 }
 
-const int* MemoryManager::searchMemoryPattern(const int* address, const int* pattern, int size, int patternSize) {
+template <typename T>
+const T* MemoryManager<T>::searchMemoryPattern(const T* address, const T* pattern, int size, int patternSize) {
     if (address != nullptr && pattern != nullptr && size > 0 && patternSize > 0) {
         return std::search(address, address + size, pattern, pattern + patternSize);
     }
@@ -499,7 +523,8 @@ const int* MemoryManager::searchMemoryPattern(const int* address, const int* pat
     }
 }
 
-void MemoryManager::swapBytes(int* address, int size) {
+template <typename T>
+void MemoryManager<T>::swapBytes(T* address, int size) {
     if (address != nullptr && size > 0) {
         for (int i = 0; i < size; ++i) {
             address[i] = ((address[i] << 24) | ((address[i] << 8) & 0xFF0000) |
@@ -511,7 +536,8 @@ void MemoryManager::swapBytes(int* address, int size) {
     }
 }
 
-void MemoryManager::printMemoryStatistics(const int* address, int size) {
+template <typename T>
+void MemoryManager<T>::printMemoryStatistics(const T* address, int size) {
     if (address != nullptr && size > 0) {
         int minValue = *std::min_element(address, address + size);
         int maxValue = *std::max_element(address, address + size);
@@ -527,7 +553,8 @@ void MemoryManager::printMemoryStatistics(const int* address, int size) {
     }
 }
 
-int* MemoryManager::compressMemory(const int* source, int size, int& compressedSize) {
+template <typename T>
+T* MemoryManager<T>::compressMemory(const T* source, int size, int& compressedSize) {
     if (source != nullptr && size > 0) {
         std::vector<int> compressedData;
 
@@ -538,7 +565,7 @@ int* MemoryManager::compressMemory(const int* source, int size, int& compressedS
         }
 
         compressedSize = compressedData.size();
-        int* compressedPtr = new (std::nothrow) int[compressedSize];
+        T* compressedPtr = new (std::nothrow) int[compressedSize];
         if (compressedPtr != nullptr) {
             std::copy(compressedData.begin(), compressedData.end(), compressedPtr);
             return compressedPtr;
@@ -554,9 +581,10 @@ int* MemoryManager::compressMemory(const int* source, int size, int& compressedS
     }
 }
 
-int* MemoryManager::decompressMemory(const int* compressedData, int compressedSize, int originalSize) {
+template <typename T>
+T* MemoryManager<T>::decompressMemory(const T* compressedData, int compressedSize, int originalSize) {
     if (compressedData != nullptr && compressedSize > 0 && originalSize > 0) {
-        int* decompressedPtr = new (std::nothrow) int[originalSize];
+        T* decompressedPtr = new (std::nothrow) int[originalSize];
         if (decompressedPtr != nullptr) {
             int currentIndex = 0;
             for (int i = 0; i < compressedSize; ++i) {
@@ -578,7 +606,8 @@ int* MemoryManager::decompressMemory(const int* compressedData, int compressedSi
     }
 }
 
-void MemoryManager::encryptMemory(int* address, int size, const std::string& key) {
+template <typename T>
+void MemoryManager<T>::encryptMemory(T* address, int size, const std::string& key) {
     if (address != nullptr && size > 0 && !key.empty()) {
         std::string binaryKey = "";
         for (char c : key) {
@@ -594,7 +623,8 @@ void MemoryManager::encryptMemory(int* address, int size, const std::string& key
     }
 }
 
-void MemoryManager::decryptMemory(int* address, int size, const std::string& key) {
+template <typename T>
+void MemoryManager<T>::decryptMemory(T* address, int size, const std::string& key) {
     if (address != nullptr && size > 0 && !key.empty()) {
         std::string binaryKey = "";
         for (char c : key) {
@@ -610,7 +640,8 @@ void MemoryManager::decryptMemory(int* address, int size, const std::string& key
     }
 }
 
-void MemoryManager::reverseMemoryInRange(int* address, int start, int end) {
+template <typename T>
+void MemoryManager<T>::reverseMemoryInRange(T* address, int start, int end) {
     if (address != nullptr && start >= 0 && end < size && start < end) {
         std::reverse(address + start, address + end + 1);
     }
@@ -619,8 +650,8 @@ void MemoryManager::reverseMemoryInRange(int* address, int start, int end) {
     }
 }
 
-
-void MemoryManager::rotateMemoryLeft(int* address, int size, int shiftCount) {
+template <typename T>
+void MemoryManager<T>::rotateMemoryLeft(T* address, int size, int shiftCount) {
     if (address != nullptr && size > 0) {
         std::rotate(address, address + shiftCount % size, address + size);
     }
@@ -629,7 +660,8 @@ void MemoryManager::rotateMemoryLeft(int* address, int size, int shiftCount) {
     }
 }
 
-void MemoryManager::rotateMemoryRight(int* address, int size, int shiftCount) {
+template <typename T>
+void MemoryManager<T>::rotateMemoryRight(T* address, int size, int shiftCount) {
     if (address != nullptr && size > 0) {
         shiftCount = (shiftCount % size + size) % size; // Ensure shiftCount is non-negative
         std::rotate(address, address + size - shiftCount, address + size);
@@ -639,7 +671,8 @@ void MemoryManager::rotateMemoryRight(int* address, int size, int shiftCount) {
     }
 }
 
-void MemoryManager::shuffleMemory(int* address, int size) {
+template <typename T>
+void MemoryManager<T>::shuffleMemory(T* address, int size) {
     if (address != nullptr && size > 0) {
         std::random_device rd;
         std::mt19937 g(rd());
@@ -650,7 +683,8 @@ void MemoryManager::shuffleMemory(int* address, int size) {
     }
 }
 
-void MemoryManager::uniqueMemory(int* address, int& size) {
+template <typename T>
+void MemoryManager<T>::uniqueMemory(T* address, int& size) {
     if (address != nullptr && size > 0) {
         auto newEnd = std::unique(address, address + size);
         size = std::distance(address, newEnd);
@@ -660,7 +694,8 @@ void MemoryManager::uniqueMemory(int* address, int& size) {
     }
 }
 
-void MemoryManager::removeValue(int* address, int& size, int value) {
+template <typename T>
+void MemoryManager<T>::removeValue(T* address, int& size, int value) {
     if (address != nullptr && size > 0) {
         auto newEnd = std::remove(address, address + size, value);
         size = std::distance(address, newEnd);
@@ -670,7 +705,8 @@ void MemoryManager::removeValue(int* address, int& size, int value) {
     }
 }
 
-void MemoryManager::removeAllOccurrences(int* address, int& size, int value) {
+template <typename T>
+void MemoryManager<T>::removeAllOccurrences(T* address, int& size, int value) {
     if (address != nullptr && size > 0) {
         auto newEnd = std::remove(address, address + size, value);
         size = std::distance(address, newEnd);
@@ -680,7 +716,8 @@ void MemoryManager::removeAllOccurrences(int* address, int& size, int value) {
     }
 }
 
-void MemoryManager::resizeMemoryWithDefaultValue(int* address, int& size, int newSize, int defaultValue) {
+template <typename T>
+void MemoryManager<T>::resizeMemoryWithDefaultValue(T* address, int& size, int newSize, int defaultValue) {
     if (address != nullptr && newSize > 0) {
         if (newSize > size) {
             address = resizeMemory(address, newSize);
@@ -695,15 +732,18 @@ void MemoryManager::resizeMemoryWithDefaultValue(int* address, int& size, int ne
     }
 }
 
-bool MemoryManager::isMemoryNull(const int* address) {
+template <typename T>
+bool MemoryManager<T>::isMemoryNull(const T* address) {
     return (address == nullptr);
 }
 
-bool MemoryManager::isMemoryAllocated(const int* address) {
+template <typename T>
+bool MemoryManager<T>::isMemoryAllocated(const T* address) {
     return (address != nullptr);
 }
 
-bool MemoryManager::isMemoryInitialized(const int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::isMemoryInitialized(const T* address, int size) {
     if (address == nullptr || size <= 0) {
         std::cerr << "Invalid isMemoryInitialized check: Null pointer or invalid size." << std::endl;
         return false;
@@ -719,7 +759,8 @@ bool MemoryManager::isMemoryInitialized(const int* address, int size) {
     return true;
 }
 
-bool MemoryManager::isMemoryEmpty(const int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::isMemoryEmpty(const T* address, int size) {
     if (address == nullptr || size <= 0) {
         std::cerr << "Invalid isMemoryEmpty check: Null pointer or invalid size." << std::endl;
         return false;
@@ -735,7 +776,8 @@ bool MemoryManager::isMemoryEmpty(const int* address, int size) {
     return true;
 }
 
-bool MemoryManager::isMemoryReadable(const int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::isMemoryReadable(const T* address, int size) {
     if (address == nullptr) {
         std::cerr << "Invalid isMemoryReadable check: Null pointer." << std::endl;
         return false;
@@ -749,7 +791,8 @@ bool MemoryManager::isMemoryReadable(const int* address, int size) {
     return true;
 }
 
-bool MemoryManager::isMemoryWritable(int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::isMemoryWritable(T* address, int size) {
     if (address == nullptr) {
         std::cerr << "Invalid isMemoryWritable check: Null pointer." << std::endl;
         return false;
@@ -763,7 +806,8 @@ bool MemoryManager::isMemoryWritable(int* address, int size) {
     return true;
 }
 
-void MemoryManager::swapAdjacentValues(int* address, int size) {
+template <typename T>
+void MemoryManager<T>::swapAdjacentValues(T* address, int size) {
     if (address != nullptr && size > 1) {
         for (int i = 0; i < size - 1; i += 2) {
             std::swap(address[i], address[i + 1]);
@@ -774,7 +818,8 @@ void MemoryManager::swapAdjacentValues(int* address, int size) {
     }
 }
 
-void MemoryManager::replaceValue(int* address, int size, int oldValue, int newValue) {
+template <typename T>
+void MemoryManager<T>::replaceValue(T* address, int size, int oldValue, int newValue) {
     if (address != nullptr && size > 0) {
         std::replace(address, address + size, oldValue, newValue);
     }
@@ -783,13 +828,14 @@ void MemoryManager::replaceValue(int* address, int size, int oldValue, int newVa
     }
 }
 
-int* MemoryManager::mergeSortedMemory(const int* block1, int size1, const int* block2, int size2) {
+template <typename T>
+T* MemoryManager<T>::mergeSortedMemory(const T* block1, int size1, const T* block2, int size2) {
     if (block1 == nullptr || size1 <= 0 || block2 == nullptr || size2 <= 0) {
         std::cerr << "Invalid mergeSortedMemory operation: Null or empty blocks." << std::endl;
         return nullptr;
     }
 
-    int* mergedBlock = new int[size1 + size2];
+    T* mergedBlock = new int[size1 + size2];
     int i = 0, j = 0, k = 0;
 
     while (i < size1 && j < size2) {
@@ -812,7 +858,8 @@ int* MemoryManager::mergeSortedMemory(const int* block1, int size1, const int* b
     return mergedBlock;
 }
 
-bool MemoryManager::isMemoryPalindrome(const int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::isMemoryPalindrome(const T* address, int size) {
     if (address == nullptr || size <= 0) {
         std::cerr << "Invalid isMemoryPalindrome operation: Null or empty block." << std::endl;
         return false;
@@ -827,7 +874,8 @@ bool MemoryManager::isMemoryPalindrome(const int* address, int size) {
     return true;
 }
 
-int MemoryManager::binarySearch(const int* sortedBlock, int size, int target) {
+template <typename T>
+int MemoryManager<T>::binarySearch(const T* sortedBlock, int size, int target) {
     if (sortedBlock == nullptr || size <= 0) {
         std::cerr << "Invalid binarySearch operation: Null or empty sorted block." << std::endl;
         return -1;
@@ -853,7 +901,8 @@ int MemoryManager::binarySearch(const int* sortedBlock, int size, int target) {
     return -1;
 }
 
-void MemoryManager::rotateMemoryRangeLeft(int* address, int start, int end, int shiftCount) {
+template <typename T>
+void MemoryManager<T>::rotateMemoryRangeLeft(T* address, int start, int end, int shiftCount) {
     if (address != nullptr && start >= 0 && end < size && start < end) {
         std::rotate(address + start, address + start + (shiftCount % (end - start + 1)), address + end + 1);
     }
@@ -862,7 +911,8 @@ void MemoryManager::rotateMemoryRangeLeft(int* address, int start, int end, int 
     }
 }
 
-void MemoryManager::rotateMemoryRangeRight(int* address, int start, int end, int shiftCount) {
+template <typename T>
+void MemoryManager<T>::rotateMemoryRangeRight(T* address, int start, int end, int shiftCount) {
     if (address != nullptr && start >= 0 && end < size && start < end) {
         std::rotate(address + start, address + end - (shiftCount % (end - start + 1)) + 1, address + end + 1);
     }
@@ -871,7 +921,8 @@ void MemoryManager::rotateMemoryRangeRight(int* address, int start, int end, int
     }
 }
 
-void MemoryManager::swapAdjacentMemoryRanges(int* address, int range1Start, int range1End, int range2Start, int range2End) {
+template <typename T>
+void MemoryManager<T>::swapAdjacentMemoryRanges(T* address, int range1Start, int range1End, int range2Start, int range2End) {
     if (address != nullptr && range1Start >= 0 && range1End < size && range1Start < range1End &&
         range2Start >= 0 && range2End < size && range2Start < range2End) {
 
@@ -882,7 +933,8 @@ void MemoryManager::swapAdjacentMemoryRanges(int* address, int range1Start, int 
     }
 }
 
-void MemoryManager::threeWayPartition(int* address, int size, int pivotValue, int& lowerBound, int& upperBound) {
+template <typename T>
+void MemoryManager<T>::threeWayPartition(T* address, int size, int pivotValue, int& lowerBound, int& upperBound) {
     if (address != nullptr && size > 0) {
         lowerBound = 0;
         upperBound = size - 1;
@@ -908,7 +960,8 @@ void MemoryManager::threeWayPartition(int* address, int size, int pivotValue, in
     }
 }
 
-int* MemoryManager::unionSortedMemory(const int* block1, int size1, const int* block2, int size2, int& unionSize) {
+template <typename T>
+T* MemoryManager<T>::unionSortedMemory(const T* block1, int size1, const T* block2, int size2, int& unionSize) {
     if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
         std::cerr << "Invalid unionSortedMemory operation." << std::endl;
         unionSize = 0;
@@ -920,13 +973,14 @@ int* MemoryManager::unionSortedMemory(const int* block1, int size1, const int* b
     result.erase(std::unique(result.begin(), result.end()), result.end());
 
     unionSize = static_cast<int>(result.size());
-    int* unionMemory = new int[unionSize];
+    T* unionMemory = new int[unionSize];
     std::copy(result.begin(), result.end(), unionMemory);
 
     return unionMemory;
 }
 
-int* MemoryManager::differenceSortedMemory(const int* block1, int size1, const int* block2, int size2, int& differenceSize) {
+template <typename T>
+T* MemoryManager<T>::differenceSortedMemory(const T* block1, int size1, const T* block2, int size2, int& differenceSize) {
     if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
         std::cerr << "Invalid differenceSortedMemory operation." << std::endl;
         differenceSize = 0;
@@ -937,13 +991,14 @@ int* MemoryManager::differenceSortedMemory(const int* block1, int size1, const i
     std::set_difference(block1, block1 + size1, block2, block2 + size2, std::back_inserter(result));
 
     differenceSize = static_cast<int>(result.size());
-    int* differenceMemory = new int[differenceSize];
+    T* differenceMemory = new int[differenceSize];
     std::copy(result.begin(), result.end(), differenceMemory);
 
     return differenceMemory;
 }
 
-int* MemoryManager::symmetricDifferenceSortedMemory(const int* block1, int size1, const int* block2, int size2, int& symDiffSize) {
+template <typename T>
+T* MemoryManager<T>::symmetricDifferenceSortedMemory(const T* block1, int size1, const T* block2, int size2, int& symDiffSize) {
     if (block1 == nullptr || block2 == nullptr || size1 <= 0 || size2 <= 0) {
         std::cerr << "Invalid symmetricDifferenceSortedMemory operation." << std::endl;
         symDiffSize = 0;
@@ -954,13 +1009,14 @@ int* MemoryManager::symmetricDifferenceSortedMemory(const int* block1, int size1
     std::set_symmetric_difference(block1, block1 + size1, block2, block2 + size2, std::back_inserter(result));
 
     symDiffSize = static_cast<int>(result.size());
-    int* symDiffMemory = new int[symDiffSize];
+    T* symDiffMemory = new int[symDiffSize];
     std::copy(result.begin(), result.end(), symDiffMemory);
 
     return symDiffMemory;
 }
 
-bool MemoryManager::isSubsetSortedMemory(const int* potentialSubset, int subsetSize, const int* set, int setSize) {
+template <typename T>
+bool MemoryManager<T>::isSubsetSortedMemory(const T* potentialSubset, int subsetSize, const T* set, int setSize) {
     if (potentialSubset == nullptr || subsetSize <= 0 || set == nullptr || setSize <= 0) {
         std::cerr << "Invalid isSubsetSortedMemory operation." << std::endl;
         return false;
@@ -969,7 +1025,8 @@ bool MemoryManager::isSubsetSortedMemory(const int* potentialSubset, int subsetS
     return std::includes(set, set + setSize, potentialSubset, potentialSubset + subsetSize);
 }
 
-bool MemoryManager::isMemoryStrictlyIncreasing(const int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::isMemoryStrictlyIncreasing(const T* address, int size) {
     if (address == nullptr || size <= 0) {
         std::cerr << "Invalid isMemoryStrictlyIncreasing operation." << std::endl;
         return false;
@@ -978,7 +1035,8 @@ bool MemoryManager::isMemoryStrictlyIncreasing(const int* address, int size) {
     return std::is_sorted(address, address + size) && std::adjacent_find(address, address + size, std::greater<int>()) == address + size;
 }
 
-bool MemoryManager::isMemoryStrictlyDecreasing(const int* address, int size) {
+template <typename T>
+bool MemoryManager<T>::isMemoryStrictlyDecreasing(const T* address, int size) {
     if (address == nullptr || size <= 0) {
         std::cerr << "Invalid isMemoryStrictlyDecreasing operation." << std::endl;
         return false;
@@ -987,7 +1045,8 @@ bool MemoryManager::isMemoryStrictlyDecreasing(const int* address, int size) {
     return std::is_sorted(address, address + size, std::greater<int>()) && std::adjacent_find(address, address + size, std::less<int>()) == address + size;
 }
 
-bool MemoryManager::isMemoryPlateau(const int* address, int size, int& plateauStart, int& plateauEnd) {
+template <typename T>
+bool MemoryManager<T>::isMemoryPlateau(const T* address, int size, int& plateauStart, int& plateauEnd) {
     if (address == nullptr || size <= 0) {
         std::cerr << "Invalid isMemoryPlateau operation." << std::endl;
         return false;
@@ -1010,7 +1069,8 @@ bool MemoryManager::isMemoryPlateau(const int* address, int size, int& plateauSt
     return plateauStart != -1 && plateauEnd != -1;
 }
 
-bool MemoryManager::isMemoryMountain(const int* address, int size, int& peakIndex) {
+template <typename T>
+bool MemoryManager<T>::isMemoryMountain(const T* address, int size, int& peakIndex) {
     if (address == nullptr || size <= 0) {
         std::cerr << "Invalid isMemoryMountain operation." << std::endl;
         return false;
