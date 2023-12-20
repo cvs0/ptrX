@@ -46,7 +46,7 @@ public:
     void deduplicateMemory(T* address, int size);
     bool copyMemorySubarray(const T* source, T* destination, int sourceStart, int destStart, int count);
     void fillMemoryWithIncrementingValues(T* address, int size, int startValue, int increment);
-    void interleaveMemory(const T* source1, const T* source2, T* destination, int size);
+    void interleaveMemory(T* destAddress, const T* block1, const T* block2, int size);
     void xorMemory(const T* source1, const T* source2, T* destination, int size);
     void moveMemory(T* destination, const T* source, int size);
     bool zeroMemoryWithOffset(T* address, int size, int offset);
