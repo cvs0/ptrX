@@ -1485,7 +1485,7 @@ inline T* MemoryManager<T>::mergeSortedMemory(const T* block1, int size1, const 
         return nullptr;
     }
 
-    T* mergedBlock = new int[size1 + size2];
+    T* mergedBlock = new T[size1 + size2];
     int i = 0, j = 0, k = 0;
 
     while (i < size1 && j < size2) {
