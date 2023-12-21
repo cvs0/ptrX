@@ -1185,37 +1185,37 @@ inline T* MemoryManager<T>::compressMemory(const T* source, int size, int& compr
  */
 template <typename T>
 inline T* MemoryManager<T>::decompressMemory(const T* compressedData, int compressedSize, int originalSize) {
-    if (compressedData != nullptr && compressedSize > 0 && originalSize > 0) {
-        T* decompressedPtr = new (std::nothrow) int[originalSize];
-        if (decompressedPtr != nullptr) {
-            int currentIndex = 0;
-            int count = 1;
-
-            for (int i = 0; i < compressedSize; ++i) {
-                decompressedPtr[currentIndex++] = compressedData[i];
-
-                while (i < compressedSize - 1 && compressedData[i] == compressedData[i + 1] && count < originalSize) {
-                    decompressedPtr[currentIndex++] = compressedData[i];
-                    ++count;
-                    ++i;
-                }
-
-                count = 1;
-            }
-
-            return decompressedPtr;
-        }
-        else {
-            std::cerr << "Memory allocation for decompressed data failed." << std::endl;
-            return nullptr;
-        }
-    }
-    else {
-        #ifdef DEBUG_MODE
-            std::cerr << "Invalid decompressMemory operation." << std::endl;
-        #endif
+    if (!compressedData || compressedSize <= 0 || originalSize <= 0) {
+#ifdef DEBUG_MODE
+        std::cerr << "Invalid decompressMemory operation." << std::endl;
+#endif
         return nullptr;
     }
+
+    T* decompressedPtr = new (std::nothrow) T[originalSize];
+    if (!decompressedPtr) {
+#ifdef DEBUG_MODE
+        std::cerr << "Memory allocation for decompressed data failed." << std::endl;
+#endif
+        return nullptr;
+    }
+
+    int currentIndex = 0;
+    int count = 1;
+
+    for (int i = 0; i < compressedSize && count < originalSize; ++i) {
+        decompressedPtr[currentIndex++] = compressedData[i];
+
+        while (i < compressedSize - 1 && compressedData[i] == compressedData[i + 1] && count < originalSize) {
+            decompressedPtr[currentIndex++] = compressedData[i];
+            ++count;
+            ++i;
+        }
+
+        count = 1;
+    }
+
+    return decompressedPtr;
 }
 
 /**
