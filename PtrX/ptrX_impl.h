@@ -2,8 +2,6 @@
 #define PTRX_IMPL_H
 
 #include "ptrX.h"
-
-#include "ptrX.h"
 #include <iostream>
 #include <algorithm>
 #include <random>
@@ -1142,35 +1140,36 @@ inline void MemoryManager<T>::printMemoryStatistics(const T* address, int size) 
  */
 template <typename T>
 inline T* MemoryManager<T>::compressMemory(const T* source, int size, int& compressedSize) {
-    if (source != nullptr && size > 0) {
-        std::vector<int> compressedData;
-
-        for (int i = 0; i < size; ++i) {
-            if (i == 0 || source[i] != source[i - 1]) {
-                compressedData.push_back(source[i]);
-            }
-        }
-
-        compressedSize = compressedData.size();
-        T* compressedPtr = new (std::nothrow) int[compressedSize];
-        if (compressedPtr != nullptr) {
-            std::copy(compressedData.begin(), compressedData.end(), compressedPtr);
-            return compressedPtr;
-        }
-        else {
-#ifdef DEBUG_MODE
-            std::cerr << "Memory allocation for compressed data failed." << std::endl;
-#endif
-            return nullptr;
-        }
-    }
-    else {
+    if (!source || size <= 0) {
 #ifdef DEBUG_MODE
         std::cerr << "Invalid compressMemory operation." << std::endl;
 #endif
         return nullptr;
     }
+
+    std::vector<T> compressedData;
+
+    for (int i = 0; i < size; ++i) {
+        if (i == 0 || source[i] != source[i - 1]) {
+            compressedData.push_back(source[i]);
+        }
+    }
+
+    compressedSize = compressedData.size();
+    T* compressedPtr = new (std::nothrow) T[compressedSize];
+
+    if (compressedPtr) {
+        std::copy(compressedData.begin(), compressedData.end(), compressedPtr);
+        return compressedPtr;
+    }
+    else {
+#ifdef DEBUG_MODE
+        std::cerr << "Memory allocation for compressed data failed." << std::endl;
+#endif
+        return nullptr;
+    }
 }
+
 
 /**
  * @brief Decompresses a memory block by expanding consecutive elements based on counts.
